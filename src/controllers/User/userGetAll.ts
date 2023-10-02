@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { UserService } from '@src/services/User/userServices';
+import { UserGetAllService } from '@src/services/User/userGetAll';
 
-export class UserController {
-  static async getAllUsers(req: Request, res: Response) {
+export class UserGetAllController {
+  static async execute(req: Request, res: Response) {
     try {
-      const users = await UserService.getAllUsers();
+      const users = await UserGetAllService.execute();
       res.status(200).json(users);
     } catch (error) {
       console.error('Erro ao buscar todos os usuários:', error);

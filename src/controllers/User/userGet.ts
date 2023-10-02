@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { UserService } from '@src/services/User/userServices';
+import { UserGetService } from '@src/services/User/userGet';
 
-export class UserController {
+export class UserGetController {
   static async getUser(req: Request, res: Response) {
     try {
       const userId = req.params.id;
-      const user = await UserService.getUserById(userId)
+      const user = await UserGetService.execute(userId)
       if (user) {
         res.status(200).json(user);
       } else {

@@ -18,4 +18,46 @@ model User {
   password String
   googleId String?
   createdAt DateTime @default(now())
+
+  wallets Wallet[]
+}
+
+model Wallet {
+  id String @id @default(cuid())
+  user_id String
+  name String @default("My Wallet")
+  user    User    @relation(fields: [user_id], references: [id])
+  createdAt DateTime @default(now())
+
+  expenses Expense[]
+}
+
+model Expense {
+  id String @id @default(cuid())
+  date      DateTime
+  description String
+  amount    Float
+  isFixed Boolean @default(false)
+  category ExpenseCategory
+  wallet_id String
+  item_id Int?
+
+  wallet    Wallet   @relation(fields: [wallet_id], references: [id])
+
+  items Item[]
+}
+
+model Item {
+  id           Int           @id @default(autoincrement())
+  amount       Float
+  description  String
+  expense_id   String
+  expense      Expense      @relation(fields: [expense_id], references: [id])
+}
+
+enum ExpenseCategory {
+  CustoFixo
+  Lazer
+  Comodidade
+  Investimentos
 }
