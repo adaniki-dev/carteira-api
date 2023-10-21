@@ -18,46 +18,49 @@ model User {
   password String
   googleId String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profiles Profile[]
+}
 
+model Profile {
+  id String @id @default(cuid())
+  userId String
+  name String
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   wallets Wallet[]
 }
 
 model Wallet {
-  id String @id @default(cuid())
-  user_id String
-  name String @default("My Wallet")
-  user    User    @relation(fields: [user_id], references: [id])
-  createdAt DateTime @default(now())
-
-  expenses Expense[]
+  id         String  @id @default(cuid())
+  profileId  String
+  profile    Profile @relation(fields: [profileId], references: [id])
+  FinancialTransactions FinancialTransaction[]
+  salary    Float
+  extra     Float
+  total      Float
+  mounth    Int
+  year      Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
-model Expense {
-  id String @id @default(cuid())
-  date      DateTime
-  description String
-  amount    Float
-  isFixed Boolean @default(false)
-  category ExpenseCategory
-  wallet_id String
-  item_id Int?
-
-  wallet    Wallet   @relation(fields: [wallet_id], references: [id])
-
-  items Item[]
+model FinancialTransaction {
+  id         Int  @id @default(autoincrement())
+  walletId   String
+  wallet     Wallet @relation(fields: [walletId], references: [id])
+  name       String
+  amount     Float
+  transactionType TransactionType
+  month      Int
+  year       Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
-model Item {
-  id           Int           @id @default(autoincrement())
-  amount       Float
-  description  String
-  expense_id   String
-  expense      Expense      @relation(fields: [expense_id], references: [id])
-}
-
-enum ExpenseCategory {
-  CustoFixo
-  Lazer
-  Comodidade
-  Investimentos
+enum TransactionType {
+  FIXED_COST
+  INVESTMENT
+  MONTHLY_EXPENSE
 }

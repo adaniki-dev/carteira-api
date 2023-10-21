@@ -1,7 +1,7 @@
 import { User } from '@src/models/User/UserModel';
 
-export class UserGetService {
-  static async execute(userId: string) {
+export class UserServiceGet {
+  static async getUserById(userId: string) {
     try {
       const user = await User.get(userId);
       return user;

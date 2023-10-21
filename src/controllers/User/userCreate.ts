@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { UserCreateService } from '@src/services/User/userCreate';
+import { UserServiceCreate } from '@src/services/User/userCreate';
 
-export class UserCreateController {
-  static async execute(req: Request, res: Response) {
+export class UserControllerCreate {
+  static async createUser(req: Request, res: Response) {
     const { username, name, email, password, lastName, birthDate } = req.body;
 
     try {
-      const newUser = await UserCreateService.execute({ username, name, email, password, lastName, birthDate });
+      const newUser = await UserServiceCreate.createUser({ username, name, email, password, lastName, birthDate });
       res.status(201).json(newUser);
     } catch (error) {
       console.error('Erro ao criar usuário:', error);

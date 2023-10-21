@@ -43,15 +43,6 @@ export class User {
     }
 
   }
-  
-  static async getAll(): Promise<PrismaUser[]> {
-    try {
-      const users = await prisma.user.findMany();
-      return users;
-    } catch (error: any) {
-      throw new Error('Erro ao buscar todos os usuários: ' + error.message);
-    }
-  }
 
   static async get(id: string): Promise<PrismaUser | null> {
     try {
