@@ -1,4 +1,6 @@
 import { PrismaClient, User as PrismaUser } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -25,12 +27,14 @@ export class User {
         throw new Error('Campo "birthDate" é obrigatório.');
     }
 
+    const hashedPassword = await bcrypt.hash(this.userData.password, 10);
+
     try {
       const newUser = await prisma.user.create({
         data: {
           username: this.userData.username,
           email: this.userData.email,
-          password: this.userData.password,
+          password: hashedPassword,
           name: this.userData.name,
           lastName: this.userData.lastName,
           birthDate: this.userData.birthDate,
@@ -42,6 +46,28 @@ export class User {
       throw new Error('Erro ao criar usuário: ' + error.message);
     }
 
+  }
+
+  static async authenticate(email: string, password: string): Promise<any> {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return null;
+    }
+
+    return user;
+  }
+
+  static async generateAccessToken(user: any): Promise<string> {
+    return jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '1h' });
   }
 
   static async get(id: string): Promise<PrismaUser | null> {

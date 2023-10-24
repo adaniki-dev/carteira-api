@@ -15,7 +15,7 @@ export class Wallet {
         if(this.walletData.extra === undefined) {
             throw new Error('Campo "balance" é obrigatório.');
         }
-        if(this.walletData.mounth === undefined) {
+        if(this.walletData.month === undefined) {
             throw new Error('Campo "balance" é obrigatório.');
         }
         if(this.walletData.year === undefined) {
@@ -31,7 +31,7 @@ export class Wallet {
                     profileId: this.walletData.profileId,
                     salary: this.walletData.salary,
                     extra: this.walletData.extra,
-                    mounth: this.walletData.mounth,
+                    month: this.walletData.month,
                     year: this.walletData.year,
                     total: this.walletData.total,
                 },
@@ -59,6 +59,18 @@ export class Wallet {
             return wallet;
         } catch (error: any) {
             throw new Error('Erro ao buscar carteira: ' + error.message);
+        }
+    }
+
+    static async update(id: string, walletData: Partial<PrismaWallet>): Promise<PrismaWallet> {
+        try {
+            const updatedWallet = await prisma.wallet.update({
+                where: { id },
+                data: walletData,
+            });
+            return updatedWallet;
+        } catch (error: any) {
+            throw new Error('Erro ao atualizar carteira: ' + error.message);
         }
     }
 
